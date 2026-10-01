@@ -5,10 +5,28 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Obřad — JD &amp; JC</title>
   <link rel="stylesheet" href="src/styles/style.css" />
+  <script src="src/scripts/theme.js"></script>
 </head>
 <body>
   <nav class="navbar">
-    <ul class="navbar__list">
+    <button type="button" class="navbar__toggle" aria-expanded="false" aria-controls="navbar-menu" aria-label="Otevřít menu">
+      <span class="navbar__toggle-bar"></span>
+      <span class="navbar__toggle-bar"></span>
+      <span class="navbar__toggle-bar"></span>
+    </button>
+    <button type="button" class="theme-toggle" aria-pressed="false" aria-label="Přepnout na tmavý režim">
+      <svg class="theme-toggle__icon theme-toggle__icon--moon" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"></path></svg>
+      <svg class="theme-toggle__icon theme-toggle__icon--sun" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"></path></svg>
+    </button>
+    <ul class="navbar__list" id="navbar-menu">
+      <li class="navbar__item">
+        <a href="index.html" class="navbar__link navbar__link--home" aria-label="Domů">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M3 9l9-7 9 7"></path>
+            <path d="M5 10v10a1 1 0 0 0 1 1h3v-7h6v7h3a1 1 0 0 0 1-1V10"></path>
+          </svg>
+        </a>
+      </li>
       <li class="navbar__item navbar__item--dropdown">
         <a href="obrad.html" class="navbar__link">Obřad</a>
         <ul class="navbar__dropdown">
@@ -23,6 +41,8 @@
           <li><a href="hostina.html#misto-a-cas">Místo a Čas</a></li>
           <li><a href="hostina.html#ubytovani">Ubytování</a></li>
           <li><a href="hostina.html#parkovani">Parkování</a></li>
+          <li><a href="hostina.html#jidlo-a-piti">Jídlo a pití</a></li>
+          <li><a href="hostina.html#zasedaci-poradek">Zasedací pořádek</a></li>
         </ul>
       </li>
       <li class="navbar__item">
@@ -39,18 +59,60 @@
 
     <section id="misto-a-cas" class="page__section">
       <h2>Místo a Čas</h2>
-      <p>Zde bude uvedeno místo a čas konání obřadu.</p>
+      <div class="highlight">
+        <p class="highlight__label">Začátek obřadu</p>
+        <p class="highlight__date"><time datetime="2027-07-17">Sobota 17. července 2027</time></p>
+        <p class="highlight__time"><time datetime="12:00">12:00</time></p>
+      </div>
+      <p>Obřad proběhne v arélu zámku Jinřichova Hradce, konkrétně v hudební pavilon Rondelu.</p>
+      <div class="gallery" data-gallery>
+        <a href="assets/rondel/rondel-1.jpg"><img src="assets/rondel/thumbs/rondel-1.jpg" alt="Hudební pavilon Rondel, pohled 1" loading="lazy"></a>
+        <a href="assets/rondel/rondel-2.jpg"><img src="assets/rondel/thumbs/rondel-2.jpg" alt="Hudební pavilon Rondel, pohled 2" loading="lazy"></a>
+        <a href="assets/rondel/rondel-3.jpg" hidden><img src="assets/rondel/thumbs/rondel-3.jpg" alt="Hudební pavilon Rondel, pohled 3" loading="lazy"></a>
+        <a href="assets/rondel/rondel-4.jpg" hidden><img src="assets/rondel/thumbs/rondel-4.jpg" alt="Hudební pavilon Rondel, pohled 4" loading="lazy"></a>
+        <a href="assets/rondel/rondel-5.jpg" hidden><img src="assets/rondel/thumbs/rondel-5.jpg" alt="Hudební pavilon Rondel, pohled 5" loading="lazy"></a>
+      </div>
     </section>
 
     <section id="cesta" class="page__section">
       <h2>Cesta</h2>
-      <p>Zde bude popsáno, jak se na místo obřadu dostanete.</p>
+      <h3>Z Českých Budějovic</h3>
+      <p>Z Českých Budějovic jeďte po silnici I/34 směrem na Třeboň a dál na Jindřichův Hradec. V Jindřichově Hradci pokračujte do centra na Balbínovo náměstí, odkud se k areálu zámku vjíždí (podrobnosti najdete v části Parkování níže).</p>
+      <p><a href="https://www.google.com/maps/dir/?api=1&amp;origin=%C4%8Cesk%C3%A9+Bud%C4%9Bjovice&amp;destination=Z%C3%A1mek+Jind%C5%99ich%C5%AFv+Hradec&amp;travelmode=driving" target="_blank" rel="noopener">Naplánovat trasu v Google Maps</a></p>
+
+      <h3>Z Číměře 5</h3>
+      <p>Z Číměře 5 (378 32 Číměř) vyjeďte na hlavní silnici II/128 směrem na Jindřichův Hradec. Silnice vás povede přes Horní Pěnu až do Jindřichova Hradce. Dále pokračujte do centra na Balbínovo náměstí a k areálu zámku.</p>
+      <p><a href="https://www.google.com/maps/dir/?api=1&amp;origin=%C4%8C%C3%ADm%C4%9B%C5%99+5%2C+378+32+%C4%8C%C3%ADm%C4%9B%C5%99&amp;destination=Z%C3%A1mek+Jind%C5%99ich%C5%AFv+Hradec&amp;travelmode=driving" target="_blank" rel="noopener">Naplánovat trasu v Google Maps</a></p>
+
+      <div class="map">
+        <iframe
+          src="https://www.google.com/maps?q=Z%C3%A1mek+Jind%C5%99ich%C5%AFv+Hradec&amp;hl=cs&amp;z=16&amp;output=embed"
+          title="Mapa: Zámek Jindřichův Hradec"
+          loading="lazy"
+          referrerpolicy="no-referrer-when-downgrade"
+          allowfullscreen></iframe>
+      </div>
     </section>
 
     <section id="parkovani" class="page__section">
       <h2>Parkování</h2>
-      <p>Zde budou informace o možnostech parkování.</p>
+      <h3>Ohledně parkování je potřeba se ještě individálně domluvit kvůli omezenému počtu míst a času!</h3>
+      <p>Vjezd <strong>maximálně 10 vozů</strong> a parkování jen po dobu obřadu. Zvláště v případě více svatebních obřadů v jednom dni musíme na dodržení tohoto pravidla trvat.</p>
+      <p>K areálu zámku lze přijet pouze z Balbínova náměstí (do zákazu vjezdu). Do areálu zámku vjíždějte pouze postranní branou, hned po sjezdu z kopce z Balbínova náměstí doprava. (Dobře si nadjeďte...) V bráně sídlí Dům gobelínů. Více na vložených mapkách.</p>
+      <div class="gallery">
+        <img src="assets/parkovani/parkovani-mapa.png" alt="Mapa parkování a vjezdu k zámku" loading="lazy">
+        <img src="assets/parkovani/vjezd-do-arealu.jpg" alt="Vjezd do areálu zámku pro svatby" loading="lazy">
+      </div>
     </section>
   </main>
+
+  <footer class="footer">
+    <p class="footer__line">The Web Master JD and the Goddess JC</p>
+    <p class="footer__line">tel.: 123456789</p>
+    <p class="footer__line">support: <a href="mailto:mywebdeissuper@definitelynotmadebyAI.com">mywebdeissuper@definitelynotmadebyAI.com</a></p>
+  </footer>
+
+  <script src="src/scripts/nav.js" defer></script>
+  <script src="src/scripts/gallery.js" defer></script>
 </body>
 </html>
