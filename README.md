@@ -10,10 +10,6 @@ Wedding website for JD & JC — a static multi-page HTML/CSS site.
 - `harmonogram.html` — schedule
 - `ostatni.html` — other information
 
-## Preview
-
-![Preview of index.html](assets/preview.png)
-
 ## Development
 
 Styles live in `src/styles/style.css`. TypeScript sources (if any) are compiled with:
