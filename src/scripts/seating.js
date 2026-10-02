@@ -26,7 +26,7 @@ document.addEventListener('DOMContentLoaded', () => {
   ];
 
   const NS = 'http://www.w3.org/2000/svg';
-  const RADIUS = 26;
+  const RADIUS = 30;
 
   const el = (name, attrs = {}, text) => {
     const node = document.createElementNS(NS, name);
@@ -47,7 +47,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   const svg = el('svg', {
     class: 'seating__svg',
-    viewBox: '0 0 800 560',
+    viewBox: '20 15 760 515',
     role: 'group',
     'aria-label': 'Zasedací pořádek',
   });
