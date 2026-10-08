@@ -17,7 +17,7 @@ document.addEventListener('DOMContentLoaded', () => {
     { rootMargin: '0px 0px -10% 0px' }
   );
 
-  document.querySelectorAll('.page__title, .page__section').forEach((element) => {
+  document.querySelectorAll('.page__section').forEach((element) => {
     if (element.getBoundingClientRect().top < window.innerHeight * 0.9) {
       return;
     }

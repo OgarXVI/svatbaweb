@@ -36,39 +36,57 @@
         </ul>
       </li>
       <li class="navbar__item navbar__item--dropdown">
-        <a href="hostina.html" class="navbar__link">Hostina</a>
+        <a aria-current="page" href="hostina.html" class="navbar__link">Hostina</a>
         <ul class="navbar__dropdown">
           <li><a href="hostina.html#misto-a-cas">Místo a Čas</a></li>
           <li><a href="hostina.html#ubytovani">Ubytování</a></li>
           <li><a href="hostina.html#parkovani">Parkování</a></li>
-          <li><a href="hostina.html#jidlo-a-piti">Jídlo a pití</a></li>
-          <li><a href="hostina.html#zasedaci-poradek">Zasedací pořádek</a></li>
+          <li hidden><a href="hostina.html#jidlo-a-piti">Jídlo a pití</a></li>
+          <li hidden><a href="hostina.html#zasedaci-poradek">Zasedací pořádek</a></li>
         </ul>
       </li>
       <li class="navbar__item">
-        <a href="harmonogram.html" class="navbar__link">Harmonogram</a>
+        <a href="pripravujeme.html" class="navbar__link">Harmonogram</a>
       </li>
       <li class="navbar__item">
-        <a href="fotografie.html" class="navbar__link">Fotografie</a>
+        <a href="pripravujeme.html" class="navbar__link">Fotografie</a>
       </li>
-      <li class="navbar__item">
-        <a href="ostatni.html" class="navbar__link">Ostatní</a>
+      <li class="navbar__item navbar__item--dropdown">
+        <a href="ostatni.html" class="navbar__link">Pro hosty</a>
+        <ul class="navbar__dropdown">
+          <li><a href="ostatni.html#svatebni-dary">Svatební dary</a></li>
+          <li><a href="ostatni.html#dresscode">Dresscode</a></li>
+          <li><a href="Povidka_rozhodovaci.html">Povídka</a></li>
+        </ul>
       </li>
     </ul>
   </nav>
 
   <main class="page">
-    <h1 class="page__title">Hostina</h1>
+    <h1 class="visually-hidden">Hostina</h1>
 
     <section id="misto-a-cas" class="page__section">
       <h2>Místo a Čas</h2>
-      <p>Ubytování a hostina <a href="https://penzionanilife.cz/" target="_blank" rel="noopener noreferrer">https://penzionanilife.cz/</a></p>
+      <p>Hostina i ubytování budou ve <strong>Wellness penzionu Anilife</strong>. Penzion stojí na svahu nad obcí Číměř u Jindřichova Hradce, v srdci České Kanady, v klidné lokalitě uprostřed přírody. Najdete v něm útulné pokoje, restauraci a wellness s vnitřním bazénem, finskou saunou, vířivkou a infrasaunou. Více informací a fotografií najdete na <a href="https://penzionanilife.cz/" target="_blank" rel="noopener noreferrer">webu penzionu</a>.</p>
+      <div class="gallery gallery--cover">
+        <img src="assets/penzion/penzion-1.jpg" alt="Wellness penzion Anilife v podvečerním osvětlení" loading="lazy">
+        <img src="assets/penzion/penzion-2.webp" alt="Zahrada u penzionu s altánem" loading="lazy">
+      </div>
 
+      <h3>Adresa</h3>
+      <p>Wellness penzion Anilife<br>Číměř 5<br>378 32 Číměř</p>
+      <p><a href="https://www.google.com/maps/search/?api=1&amp;query=%C4%8C%C3%ADm%C4%9B%C5%99+5%2C+378+32+%C4%8C%C3%ADm%C4%9B%C5%99" target="_blank" rel="noopener">Zobrazit v Google Maps</a></p>
+
+      <h3>Cesta z Českých Budějovic</h3>
+      <p>Z Českých Budějovic jeďte po silnici I/34 přes Třeboň do Jindřichova Hradce. Zde odbočte na silnici II/128 směrem na Novou Bystřici. Ta vás povede přes Horní Pěnu až do Číměře, kde penzion najdete na svahu nad obcí. Cesta zabere zhruba hodinu.</p>
+      <p><a href="https://www.google.com/maps/dir/?api=1&amp;origin=%C4%8Cesk%C3%A9+Bud%C4%9Bjovice&amp;destination=%C4%8C%C3%ADm%C4%9B%C5%99+5%2C+378+32+%C4%8C%C3%ADm%C4%9B%C5%99&amp;travelmode=driving" target="_blank" rel="noopener">Naplánovat trasu v Google Maps</a></p>
     </section>
 
     <section id="ubytovani" class="page__section">
       <h2>Ubytování</h2>
-      <p>Jsou dostupné 6 pokojů od pátka do neděle, součástí ubytování je snídaně a wellness</p>
+      <p>Jedná se o menší penzion, takže počet pokojů je omezený, je třeba se předem domluvit s námi o ubytování. Je možné už <strong>od pátku</strong> do neděle. Budeme rádi, pokud s námi strávíte co nejvíce času, klidně přijeďte už den před samotnou oslavou :)</p>
+      <p>Pokoje jsou již uhrazeny, stejně tak snídaně i wellness.</p>
+      <p>V den svatby bude připravena svatební hostina a večerní raut, včetně nápojů. Jídlo a pití mimo den svatby si hosté hradí sami.</p>
     </section>
 
     <section id="parkovani" class="page__section">
@@ -76,7 +94,7 @@
       <p>Parkovat lze přímo před penzionem. Dostatek místa pro všechny hosty.</p>
     </section>
 
-    <section id="jidlo-a-piti" class="page__section">
+    <section id="jidlo-a-piti" class="page__section" hidden>
       <h2>Jídlo a pití</h2>
 
       <h3>Pití</h3>
@@ -117,7 +135,7 @@
       <p>Ze sladkého nabídneme svatební dort a sweet bar.</p>
     </section>
 
-    <section id="zasedaci-poradek" class="page__section">
+    <section id="zasedaci-poradek" class="page__section" hidden>
       <h2>Zasedací pořádek</h2>
       <p>Najeďte myší (nebo klepněte) na kroužek a zobrazí se celé jméno hosta.</p>
       <div class="seating" data-seating>
