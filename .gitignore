@@ -9,3 +9,6 @@ yarn-error.log*
 .pnp.js
 
 .vscode/*
+.claude/settings.local.json
+
+/api/config.php

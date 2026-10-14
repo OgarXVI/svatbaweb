@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Ostatní — JD &amp; JC</title>
+  <title>Pro hosty — JD &amp; JC</title>
   <link rel="stylesheet" href="src/styles/style.css" />
   <script src="src/scripts/theme.js"></script>
 </head>
@@ -21,10 +21,7 @@
     <ul class="navbar__list" id="navbar-menu">
       <li class="navbar__item">
         <a href="index.html" class="navbar__link navbar__link--home" aria-label="Domů">
-          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-            <path d="M3 9l9-7 9 7"></path>
-            <path d="M5 10v10a1 1 0 0 0 1 1h3v-7h6v7h3a1 1 0 0 0 1-1V10"></path>
-          </svg>
+          <span class="monogram" aria-hidden="true">J<sup>2</sup></span>
         </a>
       </li>
       <li class="navbar__item navbar__item--dropdown">
@@ -41,30 +38,42 @@
           <li><a href="hostina.html#misto-a-cas">Místo a Čas</a></li>
           <li><a href="hostina.html#ubytovani">Ubytování</a></li>
           <li><a href="hostina.html#parkovani">Parkování</a></li>
-          <li><a href="hostina.html#jidlo-a-piti">Jídlo a pití</a></li>
-          <li><a href="hostina.html#zasedaci-poradek">Zasedací pořádek</a></li>
+          <li hidden><a href="hostina.html#jidlo-a-piti">Jídlo a pití</a></li>
+          <li hidden><a href="hostina.html#zasedaci-poradek">Zasedací pořádek</a></li>
         </ul>
       </li>
       <li class="navbar__item">
-        <a href="harmonogram.html" class="navbar__link">Harmonogram</a>
+        <a href="pripravujeme.html" class="navbar__link">Harmonogram</a>
       </li>
       <li class="navbar__item">
-        <a href="ostatni.html" class="navbar__link">Ostatní</a>
+        <a href="pripravujeme.html" class="navbar__link">Fotografie</a>
+      </li>
+      <li class="navbar__item navbar__item--dropdown">
+        <a aria-current="page" href="ostatni.html" class="navbar__link">Pro hosty</a>
+        <ul class="navbar__dropdown">
+          <li><a href="ostatni.html#svatebni-dary">Svatební dary</a></li>
+          <li><a href="ostatni.html#dresscode">Dresscode</a></li>
+          <li><a href="povidka/Povidka_rozhodovaci.html">Povídka</a></li>
+          <li><a href="prihlaska.html">Formulář</a></li>
+        </ul>
       </li>
     </ul>
   </nav>
 
   <main class="page">
-    <h1 class="page__title">Ostatní</h1>
+    <h1 class="visually-hidden">Pro hosty</h1>
 
     <section id="svatebni-dary" class="page__section">
       <h2>Svatební dary</h2>
       <div class="note">
         <p>Vaše přítomnost je pro nás tím nejkrásnějším darem. Pokud nás přesto budete chtít obdarovat, potěší nás příspěvek ve finanční podobě. Splní nám tak naše společné přání a pomůže nám začít nový společný život.</p>
-        <p>Dar můžete předat osobně v hotovosti, nebo ho poslat elektronicky pomocí QR kódu uvedeného níže. Za jakýkoli projev vaší štědrosti předem srdečně děkujeme.</p>
-      </div>
-      <div class="qr">
-        <div class="qr__placeholder">Zde bude QR kód</div>
+        </div>
+    </section>
+
+    <section id="dresscode" class="page__section">
+      <h2>Dresscode</h2>
+      <div class="note">
+        <p>Informace o dresscodu doplníme.</p>
       </div>
     </section>
   </main>

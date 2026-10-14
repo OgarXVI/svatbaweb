@@ -21,14 +21,11 @@
     <ul class="navbar__list" id="navbar-menu">
       <li class="navbar__item">
         <a href="index.html" class="navbar__link navbar__link--home" aria-label="Domů">
-          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-            <path d="M3 9l9-7 9 7"></path>
-            <path d="M5 10v10a1 1 0 0 0 1 1h3v-7h6v7h3a1 1 0 0 0 1-1V10"></path>
-          </svg>
+          <span class="monogram" aria-hidden="true">J<sup>2</sup></span>
         </a>
       </li>
       <li class="navbar__item navbar__item--dropdown">
-        <a href="obrad.html" class="navbar__link">Obřad</a>
+        <a aria-current="page" href="obrad.html" class="navbar__link">Obřad</a>
         <ul class="navbar__dropdown">
           <li><a href="obrad.html#misto-a-cas">Místo a Čas</a></li>
           <li><a href="obrad.html#cesta">Cesta</a></li>
@@ -41,21 +38,30 @@
           <li><a href="hostina.html#misto-a-cas">Místo a Čas</a></li>
           <li><a href="hostina.html#ubytovani">Ubytování</a></li>
           <li><a href="hostina.html#parkovani">Parkování</a></li>
-          <li><a href="hostina.html#jidlo-a-piti">Jídlo a pití</a></li>
-          <li><a href="hostina.html#zasedaci-poradek">Zasedací pořádek</a></li>
+          <li hidden><a href="hostina.html#jidlo-a-piti">Jídlo a pití</a></li>
+          <li hidden><a href="hostina.html#zasedaci-poradek">Zasedací pořádek</a></li>
         </ul>
       </li>
       <li class="navbar__item">
-        <a href="harmonogram.html" class="navbar__link">Harmonogram</a>
+        <a href="pripravujeme.html" class="navbar__link">Harmonogram</a>
       </li>
       <li class="navbar__item">
-        <a href="ostatni.html" class="navbar__link">Ostatní</a>
+        <a href="pripravujeme.html" class="navbar__link">Fotografie</a>
+      </li>
+      <li class="navbar__item navbar__item--dropdown">
+        <a href="ostatni.html" class="navbar__link">Pro hosty</a>
+        <ul class="navbar__dropdown">
+          <li><a href="ostatni.html#svatebni-dary">Svatební dary</a></li>
+          <li><a href="ostatni.html#dresscode">Dresscode</a></li>
+          <li><a href="povidka/Povidka_rozhodovaci.html">Povídka</a></li>
+          <li><a href="prihlaska.html">Formulář</a></li>
+        </ul>
       </li>
     </ul>
   </nav>
 
   <main class="page">
-    <h1 class="page__title">Obřad</h1>
+    <h1 class="visually-hidden">Obřad</h1>
 
     <section id="misto-a-cas" class="page__section">
       <h2>Místo a Čas</h2>
@@ -64,7 +70,7 @@
         <p class="highlight__date"><time datetime="2027-07-17">Sobota 17. července 2027</time></p>
         <p class="highlight__time"><time datetime="12:00">12:00</time></p>
       </div>
-      <p>Obřad proběhne v arélu zámku Jinřichova Hradce, konkrétně v hudební pavilon Rondelu.</p>
+      <p>Obřad proběhne v arélu zámku Jindřichova Hradce, konkrétně v hudební pavilon Rondelu.</p>
       <div class="gallery" data-gallery>
         <a href="assets/rondel/rondel-1.jpg"><img src="assets/rondel/thumbs/rondel-1.jpg" alt="Hudební pavilon Rondel, pohled 1" loading="lazy"></a>
         <a href="assets/rondel/rondel-2.jpg"><img src="assets/rondel/thumbs/rondel-2.jpg" alt="Hudební pavilon Rondel, pohled 2" loading="lazy"></a>
@@ -97,12 +103,23 @@
     <section id="parkovani" class="page__section">
       <h2>Parkování</h2>
       <h3>Ohledně parkování je potřeba se ještě individálně domluvit kvůli omezenému počtu míst a času!</h3>
-      <p>Vjezd <strong>maximálně 10 vozů</strong> a parkování jen po dobu obřadu. Zvláště v případě více svatebních obřadů v jednom dni musíme na dodržení tohoto pravidla trvat.</p>
+      <p>Parkovací místa pro <strong>maximálně 10 vozů</strong> a parkovat zde lze jen po dobu obřadu.</p>
       <p>K areálu zámku lze přijet pouze z Balbínova náměstí (do zákazu vjezdu). Do areálu zámku vjíždějte pouze postranní branou, hned po sjezdu z kopce z Balbínova náměstí doprava. (Dobře si nadjeďte...) V bráně sídlí Dům gobelínů. Více na vložených mapkách.</p>
       <div class="gallery">
         <img src="assets/parkovani/parkovani-mapa.png" alt="Mapa parkování a vjezdu k zámku" loading="lazy">
         <img src="assets/parkovani/vjezd-do-arealu.jpg" alt="Vjezd do areálu zámku pro svatby" loading="lazy">
       </div>
+
+      <h3>Parkování v okolí zámku</h3>
+      <p>Kromě míst v areálu zámku je možné využít i veřejná parkoviště v okolí. Tato varianta se hodí zejména tehdy, pokud se plánujete zdržet déle než po dobu obřadu. Parkoviště jsou placená a v centru města platí zákaz stání mimo vyznačená místa, proto parkujte jen na označených plochách.</p>
+      <p>Několik návrhů:</p>
+      <ul class="list">
+        <li><strong>Náměstí Míru</strong> &ndash; nejbližší možnost, k zámku je to zhruba 300 m (asi 3&ndash;5 minut pěšky).</li>
+        <li><strong>Parkoviště u muzea</strong> &ndash; asi 5 minut pěšky od zámku.</li>
+        <li><strong>Na Příkopech</strong>, <strong>Janderova ulice</strong> a <strong>Klášterská ulice</strong> &ndash; parkoviště v centru, ke kterým je to řádově několik set metrů.</li>
+        <li><strong>Nábřeží Ladislava Stehny</strong> &ndash; o něco dál, nabízí ale další místa k zaparkování.</li>
+      </ul>
+      <p>Aktuální mapu parkovišť najdete na stránkách zámku (<a href="https://www.zamek-jindrichuvhradec.cz/pamatky/jindrichuv-hradec/pdf/parkoviste-v-centru-mesta.pdf" target="_blank" rel="noopener">Kde zaparkovat v centru Jindřichova Hradce</a>) a ceny a způsoby platby na <a href="https://www.jh.cz/cs/urad-on-line/prakticke-informace/parkovani-ve-meste.html" target="_blank" rel="noopener">stránkách města</a>.</p>
     </section>
   </main>
 
