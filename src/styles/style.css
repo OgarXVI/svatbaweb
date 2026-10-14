@@ -1123,3 +1123,90 @@ a.button,
 .page__section .gallery + h3 {
   margin-top: 2rem;
 }
+
+/* Form */
+
+.form {
+  max-width: 28rem;
+  margin: 1.5rem 3rem 0;
+}
+
+.form__field {
+  margin-bottom: 1.25rem;
+}
+
+.form__field label {
+  display: block;
+  margin-bottom: 0.4rem;
+  font-size: 0.9rem;
+  letter-spacing: 0.04em;
+  color: var(--muted);
+}
+
+.form__field input {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  font: inherit;
+  color: var(--text);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+}
+
+.form__field input:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 1px;
+  border-color: var(--accent-border);
+}
+
+.form__field--trap {
+  position: absolute;
+  left: -10000px;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}
+
+.form .button:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+
+.form__status {
+  margin-top: 1rem;
+  min-height: 1.5em;
+}
+
+.form__status--ok {
+  color: var(--accent);
+}
+
+.form__status--error {
+  color: #b3261e;
+}
+
+@media (max-width: 900px) {
+  .form {
+    margin-left: 0;
+    margin-right: 0;
+  }
+}
+
+/* Home monogram: J squared */
+
+.monogram {
+  font-family: 'Cambria Math', 'STIX Two Math', 'STIX Two Text', 'Latin Modern Math', 'Latin Modern Roman', 'Times New Roman', Times, serif;
+  font-size: 1.35rem;
+  font-style: italic;
+  font-weight: 400;
+  line-height: 1;
+}
+
+.monogram sup {
+  margin-left: 0.1em;
+  font-size: 15.08px;
+  font-style: normal;
+  font-weight: 400;
+  vertical-align: super;
+  line-height: 0;
+}
