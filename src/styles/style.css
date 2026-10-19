@@ -108,6 +108,10 @@ body,
   left: 0;
   width: 100%;
   z-index: 100;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: clamp(1.25rem, 3vw, 3rem);
   padding-inline: var(--gutter);
   background: var(--navbar-bg);
   -webkit-backdrop-filter: saturate(160%) blur(16px);
@@ -157,21 +161,23 @@ body,
   color: var(--accent);
 }
 
-.navbar__link--home {
+.navbar__home {
   display: flex;
   align-items: center;
 }
 
-.navbar__home {
-  display: none;
+.navbar__home a,
+.navbar__home a:visited {
+  display: flex;
   align-items: center;
-  height: 3.5rem;
+  padding: 1.2rem 0.25rem;
   color: var(--text);
   text-decoration: none;
+  transition: color 0.2s ease;
 }
 
-.navbar__home:hover,
-.navbar__home[aria-current='page'] {
+.navbar__home a:hover,
+.navbar__home a:focus-visible {
   color: var(--accent);
 }
 
@@ -925,8 +931,7 @@ a.button,
 
 @media (max-width: 768px) {
   .navbar {
-    display: flex;
-    align-items: center;
+    justify-content: flex-start;
     min-height: 3.5rem;
     padding: 0 1.25rem;
   }
@@ -975,12 +980,9 @@ a.button,
     background: none;
   }
 
-  .navbar__home {
-    display: flex;
-  }
-
-  .navbar__item:has(.navbar__link--home) {
-    display: none;
+  .navbar__home a {
+    padding: 0;
+    height: 3.5rem;
   }
 
   .navbar__item--dropdown > .navbar__link {
