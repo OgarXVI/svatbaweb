@@ -3,13 +3,16 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="icon" href="favicon.ico" sizes="48x48" />
+  <link rel="icon" href="favicon.svg" type="image/svg+xml" />
+  <link rel="apple-touch-icon" href="apple-touch-icon.png" />
   <title>Fotografie — JD &amp; JC</title>
   <link rel="stylesheet" href="src/styles/style.css" />
   <script src="src/scripts/theme.js"></script>
 </head>
 <body>
   <nav class="navbar">
-    <a href="index.html" class="navbar__home" aria-label="Domů"><span class="monogram" aria-hidden="true">J<sup>2</sup></span></a>
+    <div class="navbar__home"><a href="index.html" aria-label="Domů"><span class="monogram" aria-hidden="true">J<sup>2</sup></span></a></div>
     <button type="button" class="navbar__toggle" aria-expanded="false" aria-controls="navbar-menu" aria-label="Otevřít menu">
       <span class="navbar__toggle-bar"></span>
       <span class="navbar__toggle-bar"></span>
@@ -20,11 +23,6 @@
       <svg class="theme-toggle__icon theme-toggle__icon--sun" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"></path></svg>
     </button>
     <ul class="navbar__list" id="navbar-menu">
-      <li class="navbar__item">
-        <a href="index.html" class="navbar__link navbar__link--home" aria-label="Domů">
-          <span class="monogram" aria-hidden="true">J<sup>2</sup></span>
-        </a>
-      </li>
       <li class="navbar__item navbar__item--dropdown">
         <a href="obrad.html" class="navbar__link">Obřad</a>
         <ul class="navbar__dropdown">
