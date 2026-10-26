@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="icon" href="favicon.ico" sizes="48x48" />
+  <link rel="icon" href="favicon.svg" type="image/svg+xml" />
+  <link rel="apple-touch-icon" href="apple-touch-icon.png" />
+  <title>Hra — JD &amp; JC</title>
+  <link rel="stylesheet" href="src/styles/style.css" />
+  <script src="src/scripts/theme.js"></script>
+</head>
+<body>
+  <nav class="navbar">
+    <div class="navbar__home"><a href="index.html" aria-label="Domů"><span class="monogram" aria-hidden="true">J<sup>2</sup></span></a></div>
+    <button type="button" class="navbar__toggle" aria-expanded="false" aria-controls="navbar-menu" aria-label="Otevřít menu">
+      <span class="navbar__toggle-bar"></span>
+      <span class="navbar__toggle-bar"></span>
+      <span class="navbar__toggle-bar"></span>
+    </button>
+    <button type="button" class="theme-toggle" aria-pressed="false" aria-label="Přepnout na tmavý režim">
+      <svg class="theme-toggle__icon theme-toggle__icon--moon" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"></path></svg>
+      <svg class="theme-toggle__icon theme-toggle__icon--sun" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"></path></svg>
+    </button>
+    <ul class="navbar__list" id="navbar-menu">
+      <li class="navbar__item navbar__item--dropdown">
+        <a href="obrad.html" class="navbar__link">Obřad</a>
+        <ul class="navbar__dropdown">
+          <li><a href="obrad.html#misto-a-cas">Místo a Čas</a></li>
+          <li><a href="obrad.html#cesta">Cesta</a></li>
+          <li><a href="obrad.html#parkovani">Parkování</a></li>
+        </ul>
+      </li>
+      <li class="navbar__item navbar__item--dropdown">
+        <a href="hostina.html" class="navbar__link">Hostina</a>
+        <ul class="navbar__dropdown">
+          <li><a href="hostina.html#misto-a-cas">Místo a Čas</a></li>
+          <li><a href="hostina.html#ubytovani">Ubytování</a></li>
+          <li><a href="hostina.html#parkovani">Parkování</a></li>
+          <li hidden><a href="hostina.html#jidlo-a-piti">Jídlo a pití</a></li>
+          <li hidden><a href="hostina.html#zasedaci-poradek">Zasedací pořádek</a></li>
+        </ul>
+      </li>
+      <li class="navbar__item">
+        <a href="pripravujeme.html" class="navbar__link">Harmonogram</a>
+      </li>
+      <li class="navbar__item">
+        <a href="pripravujeme.html" class="navbar__link">Fotografie</a>
+      </li>
+      <li class="navbar__item navbar__item--dropdown">
+        <a aria-current="page" href="ostatni.html" class="navbar__link">Pro hosty</a>
+        <ul class="navbar__dropdown">
+          <li><a href="ostatni.html#svatebni-dary">Svatební dary</a></li>
+          <li><a href="ostatni.html#dresscode">Dresscode</a></li>
+          <li><a href="povidka/Povidka_rozhodovaci.html">Povídka</a></li>
+          <li><a href="prihlaska.html">Formulář</a></li>
+          <li><a aria-current="page" href="hra.html">Hra</a></li>
+        </ul>
+      </li>
+    </ul>
+  </nav>
+
+  <main class="page">
+    <h1 class="visually-hidden">Hra</h1>
+
+    <section id="hra" class="page__section">
+      <h2>Chytání kočiček</h2>
+      <p>Hoď návnadu a počkej, až na ni z kraje pokoje skočí kočka. Pak rychle klikej (nebo ťukej prstem), dokud neuvidíš plný ukazatel. Kolo trvá 90 sekund a nejlepší skóre se uloží v prohlížeči.</p>
+
+      <div class="game">
+        <div class="game__hud" aria-live="off">
+          <span class="game__stat">Skóre <strong id="game-score">0</strong></span>
+          <span class="game__stat">Čas <strong id="game-time">90</strong> s</span>
+          <span class="game__stat">Nejlepší <strong id="game-best">0</strong></span>
+        </div>
+        <canvas id="game-canvas" class="game__canvas" aria-label="Pokoj s kočkami, které se chytají na návnadu"></canvas>
+        <p id="game-status" class="game__status" role="status" aria-live="polite"></p>
+        <button type="button" id="game-action" class="button game__button">Začít hru</button>
+      </div>
+
+      <form id="skore-form" class="form skore-form" action="api/skore.php" method="post" hidden novalidate>
+        <p class="skore-form__intro">Tvoje skóre: <strong id="skore-value">0</strong>. Zapiš se do žebříčku.</p>
+        <div class="form__field">
+          <label for="skore-jmeno">Jméno</label>
+          <input type="text" id="skore-jmeno" name="jmeno" maxlength="30" autocomplete="nickname" required />
+        </div>
+        <div class="form__field form__field--trap" aria-hidden="true">
+          <label for="skore-web">Web</label>
+          <input type="text" id="skore-web" name="web" tabindex="-1" autocomplete="off" />
+        </div>
+        <input type="hidden" id="skore-skore" name="skore" value="0" />
+        <button type="submit" class="button">Uložit skóre</button>
+        <p id="skore-status" class="form__status" role="status" aria-live="polite"></p>
+      </form>
+
+      <h3>Žebříček</h3>
+      <table class="schedule schedule--scores" id="skore-table">
+        <thead>
+          <tr><th scope="col">Jméno</th><th scope="col">Skóre</th></tr>
+        </thead>
+        <tbody>
+          <tr><td colspan="2">Načítám…</td></tr>
+        </tbody>
+      </table>
+
+      <h3>Jak hrát</h3>
+      <ol class="list">
+        <li><strong>Hoď návnadu</strong> tlačítkem, klepnutím do pokoje nebo mezerníkem.</li>
+        <li><strong>Čekej.</strong> Když zatáhneš příliš brzy, návnada zůstane prázdná.</li>
+        <li><strong>Zatáhni</strong> hned, jak kočka skočí na návnadu. Máš na to jen asi 1,4 sekundy.</li>
+        <li><strong>Klikej</strong> co nejrychleji. Každé kliknutí přitáhne kočku blíž, ale ona se brání.</li>
+        <li><strong>Plný ukazatel</strong> znamená chycenou kočku a body. Prázdný ukazatel znamená, že kočka utekla.</li>
+      </ol>
+      <p>Tip: stín pod návnadou prozradí, jak velká kočka se blíží. Větší kočky dávají víc bodů, ale hůř se dolovují.</p>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <p class="footer__line">J&amp;J Web Cooperation s.r.o.</p>
+    <p class="footer__line">jajwc.support-email.cz</p>
+  </footer>
+
+  <script src="src/scripts/nav.js" defer></script>
+  <script src="src/scripts/reveal.js" defer></script>
+  <script src="src/scripts/hra.js" defer></script>
+  <script src="src/scripts/skore.js" defer></script>
+</body>
+</html>
