@@ -10,6 +10,13 @@ document.addEventListener('DOMContentLoaded', () => {
   const FIXED_SCORES = [
     { jmeno: 'Jana', skore: 360 },
     { jmeno: 'Jarda', skore: 120 },
+    { jmeno: 'Sazi', skore: 200 },
+    { jmeno: 'Lumi', skore: 185 },
+  ];
+  const CROWNS = [
+    { size: 22, fill: '#f2b705', stroke: '#b57f00', label: '1. místo' },
+    { size: 21, fill: '#d3d8de', stroke: '#8a939e', label: '2. místo' },
+    { size: 20, fill: '#d08a4c', stroke: '#8a531f', label: '3. místo' },
   ];
 
   if (!form || !table || !status || !scoreText || !scoreInput || !nameInput) {
@@ -23,13 +30,44 @@ document.addEventListener('DOMContentLoaded', () => {
     status.className = 'form__status' + (kind ? ' form__status--' + kind : '');
   };
 
+  const createCrown = (rank) => {
+    const { size, fill, stroke, label } = CROWNS[rank];
+    const svgNs = 'http://www.w3.org/2000/svg';
+    const svg = document.createElementNS(svgNs, 'svg');
+    svg.setAttribute('class', 'crown');
+    svg.setAttribute('viewBox', '0 0 24 24');
+    svg.setAttribute('width', String(size));
+    svg.setAttribute('height', String(size));
+    svg.setAttribute('role', 'img');
+    svg.setAttribute('aria-label', label);
+
+    const body = document.createElementNS(svgNs, 'path');
+    body.setAttribute('d', 'M2.5 8l4.8 4.2L12 4l4.7 8.2L21.5 8l-2 11h-15z');
+    body.setAttribute('fill', fill);
+    body.setAttribute('stroke', stroke);
+    body.setAttribute('stroke-width', '1.2');
+    body.setAttribute('stroke-linejoin', 'round');
+
+    const band = document.createElementNS(svgNs, 'path');
+    band.setAttribute('d', 'M4.9 16.2h14.2');
+    band.setAttribute('stroke', stroke);
+    band.setAttribute('stroke-width', '1.2');
+    band.setAttribute('stroke-linecap', 'round');
+
+    svg.append(body, band);
+    return svg;
+  };
+
   const renderScores = (entries) => {
     const sorted = entries.slice().sort((a, b) => b.skore - a.skore).slice(0, MAX_ROWS);
-    const rows = sorted.map((entry) => {
+    const rows = sorted.map((entry, index) => {
       const row = document.createElement('tr');
       const name = document.createElement('td');
       const score = document.createElement('td');
-      name.textContent = entry.jmeno;
+      if (index < CROWNS.length) {
+        name.appendChild(createCrown(index));
+      }
+      name.append(entry.jmeno);
       score.textContent = String(entry.skore);
       row.append(name, score);
       return row;
