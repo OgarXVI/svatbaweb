@@ -1,5 +1,5 @@
 (() => {
-  const W = 800;
+  const D = window.HraDraw;
   const H = 500;
   const ROUND_SECONDS = 90;
   const BITE_WINDOW = 1.4;
@@ -7,9 +7,12 @@
   const DRAIN_FACTOR = 3;
   const JUMP_DURATION = 0.55;
   const WARN_DURATION = 0.7;
-  const BAIT_Y = 400;
+  const THROW_DURATION = 0.22;
+  const PLAY_TOP = 385;
+  const PLAY_BOTTOM = 470;
+  const SIDE_MARGIN = 45;
   const STORAGE_KEY = 'kocici-hra-best';
-  const EMOJI_FONT = '"Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji",sans-serif';
+  const READY_HINT = 'Hoď myšku (tlačítko, klepnutí do pokoje nebo mezerník).';
 
   const CATS = [
     { name: 'Koťátko', emoji: '🐱', clicks: 8, points: 10, weight: 35, size: 0.8 },
@@ -19,7 +22,7 @@
     { name: 'Divoký tygr', emoji: '🐯', clicks: 42, points: 160, weight: 5, size: 1.5 },
     { name: 'Zlatá kočka (vzácná)', emoji: '😻', clicks: 20, points: 300, weight: 2, size: 1.1 }
   ];
-  const TOTAL_WEIGHT = CATS.reduce((sum, cat) => sum + cat.weight, 0);
+  const TOTAL_WEIGHT = CATS.reduce((sum, c) => sum + c.weight, 0);
 
   const canvas = document.getElementById('game-canvas');
   const actionButton = document.getElementById('game-action');
@@ -28,13 +31,14 @@
   const bestEl = document.getElementById('game-best');
   const statusEl = document.getElementById('game-status');
 
-  if (!canvas || !actionButton) {
+  if (!D || !canvas || !actionButton) {
     return;
   }
 
   const ctx = canvas.getContext('2d');
   const root = document.documentElement;
 
+  let W = 800;
   let state = 'idle';
   let stateTime = 0;
   let timeLeft = ROUND_SECONDS;
@@ -42,11 +46,12 @@
   let best = 0;
   let cat = null;
   let side = 1;
-  let bait = null;
+  let mouse = null;
   let progress = 0;
   let catPos = { x: 0, y: 0 };
+  let flip = false;
   let pulse = 0;
-  let lastCaught = null;
+  let happy = false;
   let popups = [];
   let lastFrame = 0;
 
@@ -91,10 +96,17 @@
 
   const resize = () => {
     const dpr = window.devicePixelRatio || 1;
-    const width = canvas.clientWidth || W;
-    canvas.width = Math.round(width * dpr);
-    canvas.height = Math.round(width * (H / W) * dpr);
-    ctx.setTransform(canvas.width / W, 0, 0, canvas.height / H, 0, 0);
+    const cw = canvas.clientWidth || 800;
+    const ch = canvas.clientHeight || H;
+    canvas.width = Math.round(cw * dpr);
+    canvas.height = Math.round(ch * dpr);
+    const scale = canvas.height / H;
+    W = canvas.width / scale;
+    ctx.setTransform(scale, 0, 0, scale, 0, 0);
+    if (mouse) {
+      mouse.x = clamp(mouse.x, SIDE_MARGIN, W - SIDE_MARGIN);
+      mouse.tx = clamp(mouse.tx, SIDE_MARGIN, W - SIDE_MARGIN);
+    }
   };
 
   const setState = (next, time) => {
@@ -102,16 +114,46 @@
     stateTime = time || 0;
   };
 
+  const randomSpot = (avoid) => {
+    let spot;
+    for (let i = 0; i < 8; i += 1) {
+      spot = {
+        x: SIDE_MARGIN + Math.random() * (W - 2 * SIDE_MARGIN),
+        y: PLAY_TOP + Math.random() * (PLAY_BOTTOM - PLAY_TOP)
+      };
+      if (!avoid || Math.hypot(spot.x - avoid.x, spot.y - avoid.y) > Math.min(140, W * 0.3)) {
+        break;
+      }
+    }
+    return spot;
+  };
+
+  const throwMouse = (point) => {
+    const target = point
+      ? { x: clamp(point.x, SIDE_MARGIN, W - SIDE_MARGIN), y: clamp(point.y, PLAY_TOP, PLAY_BOTTOM) }
+      : randomSpot(mouse && { x: mouse.tx, y: mouse.ty });
+    if (!mouse) {
+      mouse = { x: W / 2, y: H + 30 };
+    }
+    mouse.fx = mouse.x;
+    mouse.fy = mouse.y;
+    mouse.tx = target.x;
+    mouse.ty = target.y;
+    mouse.t = 0;
+  };
+
   const startRound = () => {
     score = 0;
     timeLeft = ROUND_SECONDS;
     cat = null;
-    bait = null;
+    mouse = null;
     popups = [];
-    lastCaught = null;
-    setStatus('Hoď návnadu (tlačítko, klepnutí na scénu nebo mezerník).');
+    setStatus(READY_HINT);
     setState('ready');
     updateHud();
+    if (window.matchMedia('(max-width: 768px)').matches) {
+      canvas.parentElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
     document.dispatchEvent(new CustomEvent('hra:start'));
   };
 
@@ -124,50 +166,56 @@
         // storage unavailable, best score lasts for this page view only
       }
     }
-    bait = null;
+    mouse = null;
     cat = null;
     setState('ended');
     updateHud();
     document.dispatchEvent(new CustomEvent('hra:konec', { detail: { score } }));
   };
 
-  const showResult = (message, seconds) => {
+  const leave = (isHappy, message) => {
+    happy = isHappy;
+    if (isHappy) {
+      score += cat.points;
+      popups.push({ text: `+${cat.points}`, x: clamp(catPos.x, 60, W - 60), y: catPos.y - 110, life: 1.4 });
+    }
     setStatus(message);
-    setState('result', seconds);
+    setState('result', isHappy ? 1.8 : 1.2);
   };
 
-  const escapeCat = (message) => {
-    lastCaught = null;
-    bait = null;
-    showResult(message, 1.1);
+  const contentCat = () => {
+    leave(true, `Kočička (${cat.name}) je spokojená a odchází. +${cat.points} bodů!`);
   };
 
-  const act = () => {
+  const act = (point) => {
     switch (state) {
       case 'idle':
       case 'ended':
         startRound();
         break;
       case 'ready':
-        bait = { x: 260 + Math.random() * 280, y: BAIT_Y };
         cat = pickCat();
         side = Math.random() < 0.5 ? -1 : 1;
+        throwMouse(point);
         setState('waiting', 1.5 + Math.random() * 2.5);
         break;
       case 'waiting':
       case 'warn':
       case 'jump':
-        bait = null;
-        cat = null;
-        showResult('Příliš brzy! Návnada zůstala prázdná.', 1);
+        throwMouse(point);
         break;
       case 'bite':
         progress = START_PROGRESS;
-        setState('reel');
+        throwMouse(point);
+        setState('play');
         break;
-      case 'reel':
-        progress = clamp(progress + 1 / cat.clicks, 0, 1);
+      case 'play':
+        progress += 1 / cat.clicks;
         pulse = 1;
+        throwMouse(point);
+        if (progress >= 1) {
+          contentCat();
+        }
         break;
       default:
         break;
@@ -188,6 +236,12 @@
 
     pulse = Math.max(0, pulse - dt * 6);
 
+    if (mouse && mouse.t < 1) {
+      mouse.t = Math.min(1, mouse.t + dt / THROW_DURATION);
+      mouse.x = lerp(mouse.fx, mouse.tx, easeOut(mouse.t));
+      mouse.y = lerp(mouse.fy, mouse.ty, easeOut(mouse.t)) - Math.sin(Math.PI * mouse.t) * 70;
+    }
+
     switch (state) {
       case 'waiting':
         stateTime -= dt;
@@ -204,9 +258,10 @@
       case 'jump': {
         stateTime += dt;
         const u = clamp(stateTime / JUMP_DURATION, 0, 1);
+        flip = side < 0;
         catPos = {
-          x: lerp(side > 0 ? W + 80 : -80, bait.x, easeOut(u)),
-          y: bait.y - Math.sin(Math.PI * u) * 150
+          x: lerp(side > 0 ? W + 80 : -80, mouse.tx, easeOut(u)),
+          y: mouse.ty - Math.sin(Math.PI * u) * 150
         };
         if (u >= 1) {
           setState('bite', BITE_WINDOW);
@@ -215,36 +270,34 @@
       }
       case 'bite':
         stateTime -= dt;
-        catPos = { x: bait.x, y: bait.y };
+        catPos = { x: mouse.tx, y: mouse.ty };
         if (stateTime <= 0) {
-          escapeCat('Kočka ti utekla. Byl jsi pomalý.');
+          leave(false, 'Kočička ztratila zájem a odešla. Byl jsi pomalý.');
         }
         break;
-      case 'reel':
+      case 'play': {
         progress -= (DRAIN_FACTOR / cat.clicks) * dt;
-        catPos = {
-          x: lerp(bait.x, W / 2, clamp(progress, 0, 1)),
-          y: lerp(BAIT_Y, 430, clamp(progress, 0, 1))
-        };
+        const dx = mouse.tx - catPos.x;
+        if (Math.abs(dx) > 8) {
+          flip = dx > 0;
+        }
+        const follow = Math.min(1, dt * 5);
+        catPos.x += dx * follow;
+        catPos.y += (mouse.ty - catPos.y) * follow;
         if (progress >= 1) {
-          score += cat.points;
-          lastCaught = cat;
-          popups.push({ text: `+${cat.points}`, x: W / 2, y: 330, life: 1.2 });
-          showResult(`Chytil jsi: ${cat.name}!`, 1.4);
-          catPos = { x: W / 2, y: 440 };
-          bait = null;
+          contentCat();
         } else if (progress <= 0) {
-          escapeCat(`${cat.name} ti utekla!`);
+          leave(false, 'Kočička ztratila zájem a odešla. Zkus to rychleji!');
         }
         break;
+      }
       case 'result':
         stateTime -= dt;
-        if (!lastCaught && cat) {
-          catPos.x += side * 650 * dt;
-        }
+        flip = side > 0;
+        catPos.x += side * (happy ? 380 : 560) * dt;
         if (stateTime <= 0) {
           cat = null;
-          lastCaught = null;
+          mouse = null;
           setState('ready');
         }
         break;
@@ -259,127 +312,23 @@
     popups = popups.filter((p) => p.life > 0);
   };
 
-  const emoji = (char, x, y, size, flip, angle) => {
-    ctx.save();
-    ctx.translate(x, y);
-    if (angle) {
-      ctx.rotate(angle);
-    }
-    if (flip) {
-      ctx.scale(-1, 1);
-    }
-    ctx.font = `${size}px ${EMOJI_FONT}`;
-    ctx.textAlign = 'center';
-    ctx.textBaseline = 'middle';
-    ctx.fillText(char, 0, 0);
-    ctx.restore();
-  };
-
-  const roundRect = (x, y, w, h, r, fill) => {
-    ctx.beginPath();
-    ctx.moveTo(x + r, y);
-    ctx.arcTo(x + w, y, x + w, y + h, r);
-    ctx.arcTo(x + w, y + h, x, y + h, r);
-    ctx.arcTo(x, y + h, x, y, r);
-    ctx.arcTo(x, y, x + w, y, r);
-    ctx.closePath();
-    ctx.fillStyle = fill;
-    ctx.fill();
-  };
-
-  const drawRoom = () => {
-    const wall = ctx.createLinearGradient(0, 0, 0, 335);
-    wall.addColorStop(0, '#f1e3cf');
-    wall.addColorStop(1, '#e6d2b6');
-    ctx.fillStyle = wall;
-    ctx.fillRect(0, 0, W, 335);
-
-    ctx.fillStyle = 'rgba(147,111,80,0.07)';
-    for (let x = 0; x < W; x += 50) {
-      ctx.fillRect(x, 0, 25, 335);
-    }
-
-    ctx.fillStyle = '#fdf7ee';
-    ctx.fillRect(0, 318, W, 18);
-
-    const floor = ctx.createLinearGradient(0, 336, 0, H);
-    floor.addColorStop(0, '#b98a5e');
-    floor.addColorStop(1, '#8f6540');
-    ctx.fillStyle = floor;
-    ctx.fillRect(0, 336, W, H - 336);
-    ctx.strokeStyle = 'rgba(60,35,15,0.25)';
-    ctx.lineWidth = 2;
-    for (let y = 366; y < H; y += 34) {
-      ctx.beginPath();
-      ctx.moveTo(0, y);
-      ctx.lineTo(W, y);
-      ctx.stroke();
-    }
-
-    roundRect(80, 60, 170, 190, 8, '#fdf7ee');
-    const sky = ctx.createLinearGradient(0, 70, 0, 240);
-    sky.addColorStop(0, '#9fd3f5');
-    sky.addColorStop(1, '#dff1fb');
-    ctx.fillStyle = sky;
-    ctx.fillRect(92, 72, 146, 166);
-    ctx.fillStyle = '#fdf7ee';
-    ctx.fillRect(160, 72, 10, 166);
-    ctx.fillRect(92, 150, 146, 10);
-    ctx.fillStyle = 'rgba(214,120,130,0.85)';
-    ctx.fillRect(70, 55, 34, 210);
-    ctx.fillRect(226, 55, 34, 210);
-
-    roundRect(540, 70, 130, 90, 6, '#936f50');
-    roundRect(550, 80, 110, 70, 3, '#fbeee0');
-    ctx.fillStyle = '#d4607a';
-    emoji('♥', 605, 116, 44, false, 0);
-
-    roundRect(310, 235, 270, 100, 22, '#b5546a');
-    roundRect(290, 275, 310, 60, 18, '#c8687e');
-    roundRect(320, 255, 250, 40, 14, '#d77c90');
-
-    emoji('🪴', 720, 330, 84, false, 0);
-
-    ctx.fillStyle = 'rgba(176,82,102,0.55)';
-    ctx.beginPath();
-    ctx.ellipse(400, 440, 250, 48, 0, 0, Math.PI * 2);
-    ctx.fill();
-    ctx.strokeStyle = 'rgba(253,247,238,0.7)';
-    ctx.lineWidth = 3;
-    ctx.beginPath();
-    ctx.ellipse(400, 440, 220, 36, 0, 0, Math.PI * 2);
-    ctx.stroke();
-  };
-
   const drawCat = () => {
-    if (!cat) {
+    if (!cat || !['jump', 'bite', 'play', 'result'].includes(state)) {
       return;
     }
-    const flip = side < 0;
     let size = 64 * cat.size;
-    let x = catPos.x;
-    let y = catPos.y;
-    let angle = 0;
+    const x = catPos.x;
     let floorY = catPos.y;
+    let y = catPos.y - size * 0.45;
+    let angle = 0;
 
     if (state === 'jump') {
-      floorY = BAIT_Y;
+      floorY = mouse.ty;
       angle = (side < 0 ? 1 : -1) * 0.25 * Math.sin(Math.PI * (stateTime / JUMP_DURATION));
-    } else if (state === 'bite') {
-      y -= size * 0.45;
-    } else if (state === 'reel') {
-      const t = clamp(progress, 0, 1);
-      x += (Math.random() - 0.5) * (1 - t) * 10;
-      floorY = catPos.y;
-      y = floorY - size * 0.45 + (Math.random() - 0.5) * (1 - t) * 8;
-      size *= 1 + t * 0.35 + pulse * 0.08;
-    } else if (state === 'result' && lastCaught) {
-      size *= 1.35;
-      y -= size * 0.45 + Math.abs(Math.sin(stateTime * 7)) * 18;
-    } else if (state === 'result') {
-      y -= size * 0.45;
-    } else {
-      return;
+    } else if (state === 'play') {
+      size *= 1 + pulse * 0.1;
+    } else if (state === 'result' && happy) {
+      y -= Math.abs(Math.sin(stateTime * 8)) * 14;
     }
 
     ctx.fillStyle = 'rgba(0,0,0,0.25)';
@@ -387,73 +336,53 @@
     ctx.ellipse(x, floorY + 8, size * 0.45, size * 0.12, 0, 0, Math.PI * 2);
     ctx.fill();
     ctx.fillStyle = '#000';
-    emoji(cat.emoji, x, y, size, flip, angle);
+    D.emoji(ctx, cat.emoji, x, y, size, flip, angle);
+
+    if (state === 'result' && happy) {
+      for (let i = 0; i < 3; i += 1) {
+        const rise = (stateTime * 45 + i * 22) % 66;
+        D.emoji(ctx, '❤️', x + (i - 1) * 26, y - size * 0.6 - rise, 24, false, 0);
+      }
+    }
   };
 
-  const drawBait = () => {
-    if (!bait) {
+  const drawMouse = () => {
+    if (!mouse) {
       return;
     }
-    if (state === 'warn' || state === 'jump') {
+    if (cat && (state === 'warn' || state === 'jump')) {
       const t = state === 'warn' ? 1 - stateTime / WARN_DURATION : 1;
+      const grow = 0.35 + t * 0.65;
       ctx.fillStyle = `rgba(30,20,10,${0.18 + t * 0.3})`;
       ctx.beginPath();
-      ctx.ellipse(bait.x, bait.y + 14, 52 * cat.size * (0.35 + t * 0.65), 14 * cat.size * (0.35 + t * 0.65), 0, 0, Math.PI * 2);
+      ctx.ellipse(mouse.tx, mouse.ty + 14, 52 * cat.size * grow, 14 * cat.size * grow, 0, 0, Math.PI * 2);
       ctx.fill();
     }
-    const wiggle = state === 'bite' || state === 'reel' ? Math.sin(performance.now() / 40) * 0.25 : 0;
+    const wiggle = state === 'bite' || state === 'play' ? Math.sin(performance.now() / 40) * 0.25 : 0;
     ctx.fillStyle = '#000';
-    emoji('🐭', bait.x, bait.y, 42, false, wiggle);
+    D.emoji(ctx, '🐭', mouse.x, mouse.y, 42, false, wiggle);
     if (state === 'bite') {
       ctx.fillStyle = '#e03b3b';
       ctx.font = 'bold 64px sans-serif';
       ctx.textAlign = 'center';
       ctx.textBaseline = 'middle';
-      ctx.fillText('!', bait.x, bait.y - 120);
+      ctx.fillText('!', mouse.tx, mouse.ty - 120);
     }
   };
 
   const drawMeter = () => {
-    if (state !== 'reel') {
+    if (state !== 'play') {
       return;
     }
-    const x = 220;
+    const w = Math.min(360, W - 100);
+    const x = (W - w) / 2;
     const y = 22;
-    const w = 360;
     const h = 22;
-    roundRect(x - 4, y - 4, w + 8, h + 8, 14, 'rgba(0,0,0,0.5)');
+    D.roundRect(ctx, x - 4, y - 4, w + 8, h + 8, 14, 'rgba(0,0,0,0.5)');
     const t = clamp(progress, 0, 1);
     const color = t < 0.33 ? '#e0584b' : t < 0.66 ? '#e8a93b' : '#58b862';
     if (t > 0.02) {
-      roundRect(x, y, w * t, h, 10, color);
-    }
-  };
-
-  const drawOverlay = () => {
-    if (state !== 'idle' && state !== 'ended') {
-      return;
-    }
-    ctx.fillStyle = 'rgba(20,14,10,0.62)';
-    ctx.fillRect(0, 0, W, H);
-    ctx.fillStyle = '#fff';
-    ctx.textAlign = 'center';
-    ctx.textBaseline = 'middle';
-    if (state === 'idle') {
-      ctx.font = '700 44px Georgia, serif';
-      ctx.fillText('Chytání kočiček', W / 2, 190);
-      ctx.font = '24px system-ui, sans-serif';
-      ctx.fillText('Hoď návnadu, počkej na kočku a pak rychle klikej!', W / 2, 250);
-      ctx.fillText('Kolo trvá 90 sekund.', W / 2, 290);
-    } else {
-      ctx.font = '700 44px Georgia, serif';
-      ctx.fillText('Konec kola', W / 2, 170);
-      ctx.font = '30px system-ui, sans-serif';
-      ctx.fillText(`Skóre: ${score}`, W / 2, 235);
-      ctx.fillText(`Nejlepší: ${best}`, W / 2, 280);
-      if (score > 0 && score >= best) {
-        ctx.fillStyle = '#ffd36b';
-        ctx.fillText('Nový rekord!', W / 2, 330);
-      }
+      D.roundRect(ctx, x, y, w * t, h, 10, color);
     }
   };
 
@@ -472,9 +401,46 @@
     ctx.globalAlpha = 1;
   };
 
+  const drawOverlay = () => {
+    if (state !== 'idle' && state !== 'ended') {
+      return;
+    }
+    const cx = W / 2;
+    const maxWidth = W - 48;
+    const serif = 'Georgia, serif';
+    const sans = 'system-ui, sans-serif';
+    ctx.fillStyle = 'rgba(20,14,10,0.62)';
+    ctx.fillRect(0, 0, W, H);
+    ctx.fillStyle = '#fff';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    if (state === 'idle') {
+      const title = 'Hraní s kočičkami';
+      D.fitFont(ctx, title, maxWidth, 44, '700', serif);
+      ctx.fillText(title, cx, 150);
+      ctx.font = `22px ${sans}`;
+      let y = D.wrapText(ctx, 'Hoď myšku, počkej, až ji kočička začne honit, a pak rychle klikej. Čím víc klikáš, tím víc se kočička baví.', cx, 215, maxWidth, 32);
+      y = D.wrapText(ctx, 'Kolo trvá 90 sekund.', cx, y + 10, maxWidth, 32);
+      D.wrapText(ctx, 'Klepnutím začni.', cx, y + 10, maxWidth, 32);
+    } else {
+      D.fitFont(ctx, 'Konec kola', maxWidth, 44, '700', serif);
+      ctx.fillText('Konec kola', cx, 170);
+      ctx.font = `30px ${sans}`;
+      ctx.fillText(`Skóre: ${score}`, cx, 235);
+      ctx.fillText(`Nejlepší: ${best}`, cx, 280);
+      if (score > 0 && score >= best) {
+        ctx.fillStyle = '#ffd36b';
+        ctx.fillText('Nový rekord!', cx, 330);
+      }
+      ctx.fillStyle = '#fff';
+      ctx.font = `20px ${sans}`;
+      ctx.fillText('Klepnutím hraj znovu.', cx, 385);
+    }
+  };
+
   const render = () => {
-    drawRoom();
-    drawBait();
+    D.room(ctx, W);
+    drawMouse();
     drawCat();
     drawMeter();
     drawPopups();
@@ -496,27 +462,24 @@
         setStatus(`Konec kola. Skóre: ${score}.`);
         break;
       case 'ready':
-        setButton('Hodit návnadu');
-        if (!statusEl.textContent || statusEl.textContent.startsWith('Připraven')) {
-          setStatus('Hoď návnadu (tlačítko, klepnutí na scénu nebo mezerník).');
-        }
+        setButton('Hodit myšku');
         break;
       case 'waiting':
       case 'warn':
       case 'jump':
-        setButton('Počkej na kočku…');
-        setStatus('Čekej na kočku. Stín pod návnadou prozradí její velikost.');
+        setButton('Počkej na kočičku…');
+        setStatus('Čekej na kočičku. Stín pod myškou prozradí, jak je velká.');
         break;
       case 'bite':
-        setButton('Tahej!');
-        setStatus('Kočka skočila na návnadu! Rychle tahej!');
+        setButton('Hraj!');
+        setStatus('Kočičku zaujala myška! Rychle začni klikat!');
         break;
-      case 'reel':
+      case 'play':
         setButton('Klikej!');
-        setStatus('Klikej co nejrychleji, ať ti neuteče!');
+        setStatus('Klikej a házej myškou po pokoji. Kočička ji honí. Plný zelený ukazatel = spokojená kočička.');
         break;
       default:
-        setButton('Hodit návnadu');
+        setButton('Hodit myšku');
         break;
     }
     updateHud();
@@ -533,7 +496,11 @@
 
   canvas.addEventListener('pointerdown', (event) => {
     event.preventDefault();
-    act();
+    const rect = canvas.getBoundingClientRect();
+    act({
+      x: (event.clientX - rect.left) * (W / rect.width),
+      y: (event.clientY - rect.top) * (H / rect.height)
+    });
   });
 
   actionButton.addEventListener('pointerdown', (event) => {
@@ -556,8 +523,13 @@
     }
   });
 
+  if ('ResizeObserver' in window) {
+    new ResizeObserver(resize).observe(canvas);
+  }
   window.addEventListener('resize', resize);
+  window.addEventListener('orientationchange', resize);
   resize();
+  setStatus('Připraven? Začni kolo.');
   updateHud();
   window.requestAnimationFrame(frame);
 })();

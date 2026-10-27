@@ -1261,6 +1261,7 @@ a.button,
 /* Cat game */
 
 .game {
+  scroll-margin-top: 4rem;
   margin: 1.75rem 0 2rem;
   padding: clamp(0.6rem, 2vw, 1rem);
   background: var(--surface);
@@ -1373,6 +1374,34 @@ a.button,
   width: 7rem;
   text-align: right;
   font-variant-numeric: tabular-nums;
+}
+
+@media (max-width: 768px) and (orientation: portrait) {
+  .game__canvas {
+    aspect-ratio: auto;
+    height: calc(100vh - 16rem);
+    height: calc(100svh - 16rem);
+    min-height: 18rem;
+    max-height: 150vw;
+  }
+}
+
+@media (max-height: 520px) and (orientation: landscape) {
+  .game__canvas {
+    aspect-ratio: auto;
+    height: calc(100vh - 7rem);
+    height: calc(100svh - 7rem);
+    min-height: 11rem;
+  }
+
+  .game__status {
+    min-height: 0;
+    margin-top: 0.5rem;
+  }
+
+  .game__button {
+    min-height: 2.75rem;
+  }
 }
 
 @media (max-width: 420px) {

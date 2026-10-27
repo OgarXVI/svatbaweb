@@ -6,7 +6,7 @@
   <link rel="icon" href="favicon.ico" sizes="48x48" />
   <link rel="icon" href="favicon.svg" type="image/svg+xml" />
   <link rel="apple-touch-icon" href="apple-touch-icon.png" />
-  <title>Hra — JD &amp; JC</title>
+  <title>Hraní s kočičkami — JD &amp; JC</title>
   <link rel="stylesheet" href="src/styles/style.css" />
   <script src="src/scripts/theme.js"></script>
 </head>
@@ -61,11 +61,11 @@
   </nav>
 
   <main class="page">
-    <h1 class="visually-hidden">Hra</h1>
+    <h1 class="visually-hidden">Hraní s kočičkami</h1>
 
     <section id="hra" class="page__section">
-      <h2>Chytání kočiček</h2>
-      <p>Hoď návnadu a počkej, až na ni z kraje pokoje skočí kočka. Pak rychle klikej (nebo ťukej prstem), dokud neuvidíš plný ukazatel. Kolo trvá 90 sekund a nejlepší skóre se uloží v prohlížeči.</p>
+      <h2>Hraní s kočičkami</h2>
+      <p>Hoď myšku a počkej, až na ni z kraje pokoje skočí kočička. Pak rychle klikej (nebo ťukej prstem do pokoje): myška se po místnosti přesouvá a kočička ji honí. Kolo trvá 90 sekund.</p>
 
       <div class="game">
         <div class="game__hud" aria-live="off">
@@ -73,7 +73,7 @@
           <span class="game__stat">Čas <strong id="game-time">90</strong> s</span>
           <span class="game__stat">Nejlepší <strong id="game-best">0</strong></span>
         </div>
-        <canvas id="game-canvas" class="game__canvas" aria-label="Pokoj s kočkami, které se chytají na návnadu"></canvas>
+        <canvas id="game-canvas" class="game__canvas" aria-label="Pokoj, ve kterém si kočičky hrají s myškou"></canvas>
         <p id="game-status" class="game__status" role="status" aria-live="polite"></p>
         <button type="button" id="game-action" class="button game__button">Začít hru</button>
       </div>
@@ -105,13 +105,13 @@
 
       <h3>Jak hrát</h3>
       <ol class="list">
-        <li><strong>Hoď návnadu</strong> tlačítkem, klepnutím do pokoje nebo mezerníkem.</li>
-        <li><strong>Čekej.</strong> Když zatáhneš příliš brzy, návnada zůstane prázdná.</li>
-        <li><strong>Zatáhni</strong> hned, jak kočka skočí na návnadu. Máš na to jen asi 1,4 sekundy.</li>
-        <li><strong>Klikej</strong> co nejrychleji. Každé kliknutí přitáhne kočku blíž, ale ona se brání.</li>
-        <li><strong>Plný ukazatel</strong> znamená chycenou kočku a body. Prázdný ukazatel znamená, že kočka utekla.</li>
+        <li><strong>Hoď myšku</strong> tlačítkem, klepnutím do pokoje nebo mezerníkem.</li>
+        <li><strong>Čekej.</strong> Z kraje pokoje přiskočí kočička. Dokud nepřiskočí, můžeš myšku jen přehazovat.</li>
+        <li><strong>Začni hrát</strong> hned, jak kočička dopadne k myšce. Máš na to jen asi 1,4 sekundy, jinak ztratí zájem.</li>
+        <li><strong>Klikej</strong> co nejrychleji. Každé kliknutí hodí myšku jinam (klepni tam, kam ji chceš poslat) a kočička za ní běží.</li>
+        <li><strong>Plný zelený ukazatel</strong> znamená spokojenou kočičku, která odejde a ty dostaneš body. Když se ukazatel vyprázdní, kočička ztratí zájem a odejde bez bodů.</li>
       </ol>
-      <p>Tip: stín pod návnadou prozradí, jak velká kočka se blíží. Větší kočky dávají víc bodů, ale hůř se dolovují.</p>
+      <p>Tip: stín pod myškou prozradí, jak velká kočička se blíží. Větší kočičky dávají víc bodů, ale potřebují víc kliknutí. Hra se přizpůsobí natočení telefonu.</p>
     </section>
   </main>
 
@@ -122,6 +122,7 @@
 
   <script src="src/scripts/nav.js" defer></script>
   <script src="src/scripts/reveal.js" defer></script>
+  <script src="src/scripts/hra-draw.js" defer></script>
   <script src="src/scripts/hra.js" defer></script>
   <script src="src/scripts/skore.js" defer></script>
 </body>

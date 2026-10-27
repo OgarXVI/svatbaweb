@@ -10,7 +10,7 @@ Wedding website for JD & JC — a static multi-page HTML/CSS site.
 - `harmonogram.html` — schedule
 - `ostatni.html` — other information
 - `prihlaska.html` — RSVP form
-- `hra.html` — cat-catching mini game (`src/scripts/hra.js`, canvas, mobile friendly)
+- `hra.html` — "Hraní s kočičkami" mini game (`src/scripts/hra.js` + `hra-draw.js`, canvas that adapts to screen size and orientation)
 
 ## Development
 
