@@ -15,12 +15,30 @@
   const READY_HINT = 'Hoď myšku (tlačítko, klepnutí do pokoje nebo mezerník).';
 
   const CATS = [
-    { name: 'Koťátko', emoji: '🐱', clicks: 8, points: 10, weight: 35, size: 0.8 },
-    { name: 'Domácí mourek', emoji: '🐈', clicks: 14, points: 25, weight: 28, size: 1 },
-    { name: 'Černý kocour', emoji: '🐈‍⬛', clicks: 22, points: 50, weight: 18, size: 1.1 },
-    { name: 'Tlustý kocour', emoji: '😾', clicks: 32, points: 90, weight: 10, size: 1.3 },
-    { name: 'Divoký tygr', emoji: '🐯', clicks: 42, points: 160, weight: 5, size: 1.5 },
-    { name: 'Zlatá kočka (vzácná)', emoji: '😻', clicks: 20, points: 300, weight: 2, size: 1.1 }
+    {
+      name: 'Nori', clicks: 8, points: 10, weight: 25, size: 0.8,
+      look: { fur: '#dcbd90', stripes: '#a47c4f', eyes: '#5aa9e6', head: 1.15 }
+    },
+    {
+      name: 'Zrzavé kotě', clicks: 14, points: 25, weight: 10, size: 0.85,
+      look: { fur: '#ee8a3c', stripes: '#c4621c', eyes: '#7bc96f', head: 1.15 }
+    },
+    {
+      name: 'Lumi', clicks: 22, points: 50, weight: 25, size: 1,
+      look: { fur: '#fbfaf6', eyes: '#5db4e0' }
+    },
+    {
+      name: 'Sazi', clicks: 32, points: 90, weight: 15, size: 1.3,
+      look: { fur: '#2a2a30', eyes: '#ffd23a', ear: '#7a5565' }
+    },
+    {
+      name: 'Laskonka', clicks: 42, points: 160, weight: 15, size: 1.4,
+      look: { fur: '#8e939c', eyes: '#e9b73c' }
+    },
+    {
+      name: 'Zlaté kotě (vzácné)', clicks: 20, points: 300, weight: 10, size: 0.85,
+      look: { fur: '#f6c431', stripes: '#d9a21b', eyes: '#3fbfc9', head: 1.15, sparkle: true }
+    }
   ];
   const TOTAL_WEIGHT = CATS.reduce((sum, c) => sum + c.weight, 0);
 
@@ -335,13 +353,25 @@
     ctx.beginPath();
     ctx.ellipse(x, floorY + 8, size * 0.45, size * 0.12, 0, 0, Math.PI * 2);
     ctx.fill();
-    ctx.fillStyle = '#000';
-    D.emoji(ctx, cat.emoji, x, y, size, flip, angle);
+    D.cat(ctx, x, y, size, cat.look, { flip, angle, happy: state === 'result' && happy });
+
+    if (state !== 'jump') {
+      ctx.font = '700 18px system-ui, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.lineWidth = 4;
+      ctx.strokeStyle = 'rgba(60,35,15,0.85)';
+      ctx.fillStyle = '#fff';
+      const labelX = clamp(x, 70, W - 70);
+      ctx.strokeText(cat.name, labelX, y - size * 0.82);
+      ctx.fillText(cat.name, labelX, y - size * 0.82);
+    }
 
     if (state === 'result' && happy) {
+      ctx.fillStyle = '#000';
       for (let i = 0; i < 3; i += 1) {
         const rise = (stateTime * 45 + i * 22) % 66;
-        D.emoji(ctx, '❤️', x + (i - 1) * 26, y - size * 0.6 - rise, 24, false, 0);
+        D.emoji(ctx, '❤️', x + (i - 1) * 34, y - size * 0.25 - rise, 24, false, 0);
       }
     }
   };

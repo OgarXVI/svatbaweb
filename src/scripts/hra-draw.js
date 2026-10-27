@@ -134,5 +134,156 @@ window.HraDraw = (() => {
     ctx.stroke();
   };
 
-  return { emoji, roundRect, wrapText, fitFont, room };
+  const ellipse = (ctx, x, y, rx, ry) => {
+    ctx.beginPath();
+    ctx.ellipse(x, y, rx, ry, 0, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.stroke();
+  };
+
+  const cat = (ctx, x, y, size, look, opts) => {
+    const u = size / 64;
+    const line = 'rgba(58,38,28,0.7)';
+    ctx.save();
+    ctx.translate(x, y);
+    if (opts.angle) {
+      ctx.rotate(opts.angle);
+    }
+    if (opts.flip) {
+      ctx.scale(-1, 1);
+    }
+    ctx.scale(u, u);
+    ctx.lineJoin = 'round';
+    ctx.lineCap = 'round';
+    ctx.strokeStyle = line;
+    ctx.fillStyle = look.fur;
+
+    ctx.beginPath();
+    ctx.moveTo(16, 20);
+    ctx.bezierCurveTo(38, 22, 40, 2, 30, -6);
+    ctx.lineWidth = 8;
+    ctx.stroke();
+    ctx.strokeStyle = look.fur;
+    ctx.lineWidth = 5.4;
+    ctx.stroke();
+
+    ctx.strokeStyle = line;
+    ctx.lineWidth = 1.8;
+    ellipse(ctx, 0, 8, 21, 17);
+    ellipse(ctx, -9, 22, 7, 4);
+    ellipse(ctx, 9, 22, 7, 4);
+
+    if (look.stripes) {
+      ctx.strokeStyle = look.stripes;
+      ctx.lineWidth = 2.4;
+      ctx.beginPath();
+      [-1, 1].forEach((s) => {
+        ctx.moveTo(s * 20, 2);
+        ctx.lineTo(s * 13, 4);
+        ctx.moveTo(s * 21, 10);
+        ctx.lineTo(s * 14, 11);
+      });
+      ctx.stroke();
+    }
+
+    ctx.save();
+    ctx.translate(0, -14);
+    ctx.scale(look.head || 1, look.head || 1);
+    ctx.strokeStyle = line;
+    ctx.lineWidth = 1.8;
+    [-1, 1].forEach((s) => {
+      ctx.fillStyle = look.fur;
+      ctx.beginPath();
+      ctx.moveTo(s * 17, -8);
+      ctx.lineTo(s * 15, -27);
+      ctx.lineTo(s * 3, -17);
+      ctx.closePath();
+      ctx.fill();
+      ctx.stroke();
+      ctx.fillStyle = look.ear || '#f4a6b5';
+      ctx.beginPath();
+      ctx.moveTo(s * 14.5, -11);
+      ctx.lineTo(s * 14, -23);
+      ctx.lineTo(s * 7, -17.5);
+      ctx.closePath();
+      ctx.fill();
+    });
+    ctx.fillStyle = look.fur;
+    ellipse(ctx, 0, 0, 19, 18);
+
+    if (look.stripes) {
+      ctx.strokeStyle = look.stripes;
+      ctx.lineWidth = 2.2;
+      ctx.beginPath();
+      ctx.moveTo(0, -18);
+      ctx.lineTo(0, -11);
+      ctx.moveTo(-5.5, -17);
+      ctx.lineTo(-4, -11);
+      ctx.moveTo(5.5, -17);
+      ctx.lineTo(4, -11);
+      ctx.stroke();
+    }
+
+    [-1, 1].forEach((s) => {
+      if (opts.happy) {
+        ctx.strokeStyle = '#2b1b12';
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.arc(s * 7, 0, 3.5, Math.PI, 0);
+        ctx.stroke();
+      } else {
+        ctx.fillStyle = look.eyes;
+        ctx.strokeStyle = line;
+        ctx.lineWidth = 1;
+        ellipse(ctx, s * 7, -1, 3.8, 4.2);
+        ctx.fillStyle = '#111';
+        ctx.beginPath();
+        ctx.ellipse(s * 7, -1, 1.2, 3.4, 0, 0, Math.PI * 2);
+        ctx.fill();
+      }
+    });
+
+    ctx.fillStyle = '#e98aa0';
+    ctx.beginPath();
+    ctx.moveTo(-2.4, 4.5);
+    ctx.lineTo(2.4, 4.5);
+    ctx.lineTo(0, 7);
+    ctx.closePath();
+    ctx.fill();
+
+    ctx.strokeStyle = line;
+    ctx.lineWidth = 1.3;
+    ctx.beginPath();
+    ctx.moveTo(0, 7);
+    ctx.lineTo(0, 9);
+    ctx.moveTo(0, 9);
+    ctx.quadraticCurveTo(-3, 11.5, -5.5, 9);
+    ctx.moveTo(0, 9);
+    ctx.quadraticCurveTo(3, 11.5, 5.5, 9);
+    ctx.stroke();
+
+    ctx.strokeStyle = 'rgba(58,38,28,0.55)';
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    [-1, 1].forEach((s) => {
+      ctx.moveTo(s * 10, 6.5);
+      ctx.lineTo(s * 25, 3.5);
+      ctx.moveTo(s * 10, 8.5);
+      ctx.lineTo(s * 26, 9);
+      ctx.moveTo(s * 10, 10.5);
+      ctx.lineTo(s * 24, 14.5);
+    });
+    ctx.stroke();
+
+    ctx.restore();
+    ctx.restore();
+
+    if (look.sparkle) {
+      ctx.fillStyle = '#000';
+      emoji(ctx, '✨', x - size * 0.42, y - size * 0.5, size * 0.32, false, 0);
+      emoji(ctx, '✨', x + size * 0.45, y - size * 0.1, size * 0.24, false, 0);
+    }
+  };
+
+  return { emoji, roundRect, wrapText, fitFont, room, cat };
 })();
