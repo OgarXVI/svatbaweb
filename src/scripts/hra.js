@@ -40,6 +40,7 @@
       look: { fur: '#f6c431', stripes: '#d9a21b', eyes: '#3fbfc9', head: 1.15, sparkle: true }
     }
   ];
+  const PORTRAITS = ['Lumi', 'Nori', 'Sazi', 'Laskonka'].map((name) => CATS.find((c) => c.name === name).look);
   const TOTAL_WEIGHT = CATS.reduce((sum, c) => sum + c.weight, 0);
 
   const canvas = document.getElementById('game-canvas');
@@ -469,7 +470,7 @@
   };
 
   const render = () => {
-    D.room(ctx, W);
+    D.room(ctx, W, PORTRAITS);
     drawMouse();
     drawCat();
     drawMeter();

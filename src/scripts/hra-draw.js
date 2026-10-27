@@ -58,7 +58,7 @@ window.HraDraw = (() => {
     }
   };
 
-  const room = (ctx, W) => {
+  const room = (ctx, W, portraits) => {
     const ds = clamp(W / 800, 0.6, 1);
 
     const wall = ctx.createLinearGradient(0, 0, 0, FLOOR_TOP);
@@ -105,13 +105,18 @@ window.HraDraw = (() => {
     ctx.fillRect(wx - 10, 55, 34 * ds, wh + 20);
     ctx.fillRect(wx + ww - 24 * ds, 55, 34 * ds, wh + 20);
 
-    const px = W * 0.66;
-    const pw = 130 * ds;
-    const ph = 90 * ds;
-    roundRect(ctx, px, 70, pw, ph, 6, '#936f50');
-    roundRect(ctx, px + 10, 80, pw - 20, ph - 20, 3, '#fbeee0');
-    ctx.fillStyle = '#d4607a';
-    emoji(ctx, '♥', px + pw / 2, 70 + ph / 2, 44 * ds, false, 0);
+    const cell = 60 * ds;
+    const gap = 8;
+    const fw = cell * 2 + gap * 3 + 12;
+    const px = Math.min(W * 0.66, W - fw - 12);
+    roundRect(ctx, px, 58, fw, fw, 8, '#936f50');
+    roundRect(ctx, px + 6, 64, fw - 12, fw - 12, 4, '#fbeee0');
+    (portraits || []).slice(0, 4).forEach((look, i) => {
+      const cx = px + 6 + gap + (i % 2) * (cell + gap);
+      const cy = 64 + gap + Math.floor(i / 2) * (cell + gap);
+      roundRect(ctx, cx, cy, cell, cell, 6, 'rgba(147,111,80,0.22)');
+      cat(ctx, cx + cell / 2, cy + cell / 2, cell * 0.95, look, { portrait: true });
+    });
 
     const sw = Math.min(310, W * 0.86);
     const sx = (W - sw) / 2;
@@ -141,23 +146,7 @@ window.HraDraw = (() => {
     ctx.stroke();
   };
 
-  const cat = (ctx, x, y, size, look, opts) => {
-    const u = size / 64;
-    const line = 'rgba(58,38,28,0.7)';
-    ctx.save();
-    ctx.translate(x, y);
-    if (opts.angle) {
-      ctx.rotate(opts.angle);
-    }
-    if (opts.flip) {
-      ctx.scale(-1, 1);
-    }
-    ctx.scale(u, u);
-    ctx.lineJoin = 'round';
-    ctx.lineCap = 'round';
-    ctx.strokeStyle = line;
-    ctx.fillStyle = look.fur;
-
+  const drawBody = (ctx, look, line) => {
     ctx.beginPath();
     ctx.moveTo(16, 20);
     ctx.bezierCurveTo(38, 22, 40, 2, 30, -6);
@@ -185,9 +174,31 @@ window.HraDraw = (() => {
       });
       ctx.stroke();
     }
+  };
+
+  const cat = (ctx, x, y, size, look, opts) => {
+    const u = size / 64;
+    const line = 'rgba(58,38,28,0.7)';
+    ctx.save();
+    ctx.translate(x, y);
+    if (opts.angle) {
+      ctx.rotate(opts.angle);
+    }
+    if (opts.flip) {
+      ctx.scale(-1, 1);
+    }
+    ctx.scale(u, u);
+    ctx.lineJoin = 'round';
+    ctx.lineCap = 'round';
+    ctx.strokeStyle = line;
+    ctx.fillStyle = look.fur;
+
+    if (!opts.portrait) {
+      drawBody(ctx, look, line);
+    }
 
     ctx.save();
-    ctx.translate(0, -14);
+    ctx.translate(0, opts.portrait ? 4 : -14);
     ctx.scale(look.head || 1, look.head || 1);
     ctx.strokeStyle = line;
     ctx.lineWidth = 1.8;
