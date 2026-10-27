@@ -58,6 +58,70 @@ window.HraDraw = (() => {
     }
   };
 
+  const TREE = { carpet: '#86b394', dark: '#5e8d70', light: '#a9d0b6', sisal: '#d8bc8e', rope: '#a8875a' };
+
+  const treePlatform = (ctx, cx, y, w) => {
+    roundRect(ctx, cx - w / 2, y + 5, w, 9, 4, TREE.dark);
+    roundRect(ctx, cx - w / 2, y, w, 11, 5, TREE.carpet);
+    roundRect(ctx, cx - w / 2 + 4, y + 1.5, w - 8, 3, 1.5, TREE.light);
+  };
+
+  const treePost = (ctx, cx, top, bottom, w) => {
+    ctx.fillStyle = TREE.sisal;
+    ctx.fillRect(cx - w / 2, top, w, bottom - top);
+    ctx.strokeStyle = TREE.rope;
+    ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    for (let y = top + 4; y < bottom; y += 6) {
+      ctx.moveTo(cx - w / 2, y);
+      ctx.lineTo(cx + w / 2, y + 2);
+    }
+    ctx.stroke();
+  };
+
+  const catTree = (ctx, cx, baseY, w, h, tall) => {
+    const pw = Math.max(12, w * 0.22);
+    const top = baseY - h;
+    ctx.fillStyle = 'rgba(0,0,0,0.18)';
+    ctx.beginPath();
+    ctx.ellipse(cx, baseY + 2, w * 0.62, 7, 0, 0, Math.PI * 2);
+    ctx.fill();
+
+    if (tall) {
+      const houseH = h * 0.27;
+      const houseTop = baseY - 12 - houseH;
+      const midY = baseY - h * 0.66;
+      treePost(ctx, cx, top + 6, houseTop, pw);
+      roundRect(ctx, cx - w * 0.36, houseTop, w * 0.72, houseH, 6, TREE.carpet);
+      ctx.fillStyle = '#2f4238';
+      ctx.beginPath();
+      ctx.ellipse(cx, houseTop + houseH * 0.58, w * 0.17, houseH * 0.32, 0, 0, Math.PI * 2);
+      ctx.fill();
+      treePlatform(ctx, cx, baseY - 12, w * 1.15);
+      treePlatform(ctx, cx, houseTop - 9, w * 0.98);
+      treePlatform(ctx, cx + w * 0.08, midY, w * 0.78);
+      treePlatform(ctx, cx, top, w * 0.9);
+
+      const toyX = cx + w * 0.42;
+      ctx.strokeStyle = 'rgba(58,38,28,0.7)';
+      ctx.lineWidth = 1.5;
+      ctx.beginPath();
+      ctx.moveTo(toyX, midY + 12);
+      ctx.lineTo(toyX, midY + 40);
+      ctx.stroke();
+      ctx.fillStyle = '#e0584b';
+      ctx.beginPath();
+      ctx.arc(toyX, midY + 46, 7, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.stroke();
+    } else {
+      treePost(ctx, cx, top + 6, baseY - 12, pw);
+      treePlatform(ctx, cx, baseY - 12, w * 1.15);
+      treePlatform(ctx, cx - w * 0.06, baseY - h * 0.5, w * 0.8);
+      treePlatform(ctx, cx, top, w);
+    }
+  };
+
   const room = (ctx, W, portraits) => {
     const ds = clamp(W / 800, 0.6, 1);
 
@@ -118,17 +182,23 @@ window.HraDraw = (() => {
       cat(ctx, cx + cell / 2, cy + cell / 2, cell * 0.95, look, { portrait: true });
     });
 
-    const sw = Math.min(310, W * 0.86);
-    const sx = (W - sw) / 2;
-    roundRect(ctx, sx + 20, 235, sw - 40, 100, 22, '#b5546a');
-    roundRect(ctx, sx, 275, sw, 60, 18, '#c8687e');
-    roundRect(ctx, sx + 30, 255, sw - 60, 40, 14, '#d77c90');
+    const left = wx + ww + 14 * ds;
+    const span = px - 12 - left;
+    if (span >= 230) {
+      const tallW = Math.min(120, span * 0.42);
+      const shortW = Math.min(96, span * 0.34);
+      const gap = (span - tallW - shortW) / 3;
+      catTree(ctx, left + gap + tallW / 2, 346, tallW, 250, true);
+      catTree(ctx, left + gap * 2 + tallW + shortW / 2, 346, shortW, 165, false);
+    } else {
+      catTree(ctx, left + span / 2, 346, Math.max(48, Math.min(110, span * 0.85)), 250, true);
+    }
 
     ctx.fillStyle = '#000';
     emoji(ctx, '🪴', W * 0.9, 330, 84 * ds, false, 0);
 
     const rx = Math.min(250, W * 0.42);
-    ctx.fillStyle = 'rgba(176,82,102,0.55)';
+    ctx.fillStyle = 'rgba(86,140,120,0.6)';
     ctx.beginPath();
     ctx.ellipse(W / 2, 440, rx, 48, 0, 0, Math.PI * 2);
     ctx.fill();
