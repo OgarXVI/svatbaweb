@@ -11,6 +11,7 @@
   const PLAY_TOP = 385;
   const PLAY_BOTTOM = 470;
   const SIDE_MARGIN = 45;
+  const BODY_UNIT = 64;
   const STORAGE_KEY = 'kocici-hra-best';
   const READY_HINT = 'Hoď myšku (tlačítko, klepnutí do pokoje nebo mezerník).';
 
@@ -228,14 +229,21 @@
         throwMouse(point);
         setState('play');
         break;
-      case 'play':
-        progress += 1 / cat.clicks;
-        pulse = 1;
+      case 'play': {
+        const prev = { x: mouse.tx, y: mouse.ty };
         throwMouse(point);
+        const ratio = Math.hypot(mouse.tx - prev.x, mouse.ty - prev.y) / (BODY_UNIT * cat.size);
+        const multiplier = ratio > 1 ? 1 + ratio : 1;
+        progress += multiplier / cat.clicks;
+        pulse = 1;
+        if (multiplier > 1) {
+          popups.push({ text: `×${multiplier.toFixed(1)}`, x: clamp(mouse.tx, 50, W - 50), y: mouse.ty - 50, life: 0.8, size: 30 });
+        }
         if (progress >= 1) {
           contentCat();
         }
         break;
+      }
       default:
         break;
     }
@@ -335,7 +343,7 @@
     if (!cat || !['jump', 'bite', 'play', 'result'].includes(state)) {
       return;
     }
-    let size = 64 * cat.size;
+    let size = BODY_UNIT * cat.size;
     const x = catPos.x;
     let floorY = catPos.y;
     let y = catPos.y - size * 0.45;
@@ -422,8 +430,8 @@
       ctx.globalAlpha = clamp(p.life, 0, 1);
       ctx.fillStyle = '#fff';
       ctx.strokeStyle = '#6a3f1d';
-      ctx.lineWidth = 6;
-      ctx.font = '700 54px system-ui, sans-serif';
+      ctx.lineWidth = p.size ? 4 : 6;
+      ctx.font = `700 ${p.size || 54}px system-ui, sans-serif`;
       ctx.textAlign = 'center';
       ctx.textBaseline = 'middle';
       ctx.strokeText(p.text, p.x, p.y);
@@ -507,7 +515,7 @@
         break;
       case 'play':
         setButton('Klikej!');
-        setStatus('Klikej a házej myškou po pokoji. Kočička ji honí. Plný zelený ukazatel = spokojená kočička.');
+        setStatus('Klikej a házej myškou po pokoji, čím dál od minulého místa, tím líp. Plný zelený ukazatel = spokojená kočička.');
         break;
       default:
         setButton('Hodit myšku');
